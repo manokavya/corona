@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {ScrollView, View} from 'react-native';
+import {AsyncStorage, ScrollView, View} from 'react-native';
 import Header from '../components/Header';
 import CountryCard from '../components/CountryCard';
 import SomethingWrong from '../components/SomethingWrong';
@@ -7,6 +7,7 @@ import SomethingWrong from '../components/SomethingWrong';
 export default class Dashboard extends React.Component {
   constructor() {
     super();
+    global.localData = [];
     this.state = {
       data: [],
       loading: true,
@@ -14,13 +15,30 @@ export default class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    fetch('https://corona.lmao.ninja/countries')
-      .then(response => {
-        return response.json();
+    AsyncStorage.getItem('data')
+      .then(data => {
+        global.localData =  JSON.parse(data);
       })
-      .then(responseJson => {
-        this.setState({data: responseJson});
-        this.setState({loading: false});
+      .then(() => {
+        if (!global.localData) {
+          fetch('https://corona.lmao.ninja/countries')
+            .then(response => {
+              return response.json();
+            })
+            .then(responseJson => {
+              console.log(global.localData)
+              AsyncStorage.setItem('data', JSON.stringify(responseJson));
+              this.setState({data: responseJson});
+              this.setState({loading: false});
+            });
+        } else {
+          console.log('dgdgtjdrdrdr')
+          AsyncStorage.getItem('data').then(data => {
+            //console.log(data);
+            this.setState({data: JSON.parse(data)});
+            this.setState({loading: false});
+          });
+        }
       });
   }
 
