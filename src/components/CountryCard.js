@@ -1,18 +1,12 @@
 import * as React from 'react';
 import {Text, StyleSheet, View} from 'react-native';
-import {Card, Title, Paragraph} from 'react-native-paper';
+import {Card, Paragraph} from 'react-native-paper';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import FA5Icon from 'react-native-vector-icons/FontAwesome5';
 
 export default class CountryCard extends React.Component {
   render() {
     const countryCard = this.props.data.map((item, key) => {
-      const handleBookingCard = () => {
-        this.props.navigation.navigate('Booking', {
-          room_id: item.id,
-        });
-      };
-
       return (
         <Card key={item.country} style={styles.card}>
           <Card.Content>
